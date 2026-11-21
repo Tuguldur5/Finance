@@ -52,6 +52,9 @@
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: #dde3ee;
   --sidebar-ring: #2563eb;
+
+  --site-header-glass: rgba(255, 255, 255, 0.7);
+  --site-header-border: rgba(0, 0, 0, 0.08);
 }
 
 /* ------------------------------------------------------------------ */
@@ -101,6 +104,19 @@
   --sidebar-accent-foreground: #000000;
   --sidebar-border: #242424;
   --sidebar-ring: #3b82f6;
+
+  --site-header-glass: rgba(10, 10, 10, 0.6);
+  --site-header-border: rgba(255, 255, 255, 0.08);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root {
+    --site-header-glass: rgba(255, 255, 255, 0.92);
+  }
+
+  .dark {
+    --site-header-glass: rgba(10, 10, 10, 0.92);
+  }
 }
 
 @theme inline {

@@ -12,9 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-import { Brand } from "@/components/brand";
 import { Hero } from "@/components/landing/hero";
-import { SiteHeader } from "@/components/landing/site-header";
 import {
   Accordion,
   AccordionContent,
@@ -24,8 +22,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { APP_NAME } from "@/lib/config";
 import { t } from "@/lib/i18n";
-import { hasSupabaseEnv } from "@/lib/supabase/env";
-import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: t("landing.metaTitle"),
@@ -64,40 +60,9 @@ const FAQ_ITEMS = [
   { value: "currency", titleKey: "landing.faq.currencyTitle", descKey: "landing.faq.currencyDescription" },
 ] as const;
 
-async function getIsAuthenticated(): Promise<boolean> {
-  if (!hasSupabaseEnv()) return false;
-
-  try {
-    const supabase = await createClient();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    return Boolean(session?.user);
-  } catch {
-    return false;
-  }
-}
-
-export default async function LandingPage() {
-  const isAuthenticated = await getIsAuthenticated();
-  const year = new Date().getFullYear();
-  const footerLinks = [
-    { href: "#features", label: t("landing.footer.product") },
-    { href: "/calculators", label: t("landing.footer.calculators") },
-    { href: "#faq", label: t("landing.footer.faq") },
-    {
-      href: isAuthenticated ? "/app" : "/login",
-      label: isAuthenticated
-        ? t("landing.footer.dashboard")
-        : t("landing.footer.login"),
-    },
-  ];
-
+export default function LandingPage() {
   return (
     <div className="dark min-h-svh bg-black text-neutral-50">
-      <SiteHeader isAuthenticated={isAuthenticated} />
-
       <main>
         <Hero />
 
@@ -180,10 +145,10 @@ export default async function LandingPage() {
                   <li key={calculator.slug} className="h-full">
                     <Link
                       href={`/calculators/${calculator.slug}`}
-                      className="group flex h-full items-center gap-2 rounded-md border border-white/[0.08] bg-[#0a0a0a] px-3 py-3 text-xs text-neutral-300 transition-colors hover:border-blue-500/40 hover:text-neutral-50"
+                      className="group flex h-full items-center gap-2 rounded-md border border-white/[0.08] bg-[#0a0a0a] px-3 py-3 text-xs text-neutral-300 transition-colors hover:border-white/40 hover:text-white"
                     >
                       <Icon
-                        className="size-4 shrink-0 text-neutral-500 transition-colors group-hover:text-blue-400"
+                        className="size-4 shrink-0 text-neutral-500 transition-colors group-hover:text-white"
                         aria-hidden="true"
                       />
                       <span className="truncate">
@@ -255,39 +220,6 @@ export default async function LandingPage() {
           </div>
         </section>
       </main>
-
-      <footer className="border-t border-white/5">
-        <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10 md:flex-row md:items-start md:justify-between">
-          <div className="max-w-xs">
-            <Brand />
-            <p className="mt-3 text-xs leading-relaxed text-neutral-500">
-              {t("landing.footer.tagline")}
-            </p>
-          </div>
-
-          <nav
-            aria-label={t("landing.nav.main")}
-            className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-neutral-400"
-          >
-            {footerLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="transition-colors hover:text-neutral-50"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-
-        <div className="border-t border-white/5">
-          <div className="mx-auto flex w-full max-w-5xl flex-col gap-1 px-4 py-4 text-[11px] text-neutral-500 sm:flex-row sm:items-center sm:justify-between">
-            <span>{t("landing.footer.rights", { year })}</span>
-            <span>{t("landing.footer.disclaimer")}</span>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

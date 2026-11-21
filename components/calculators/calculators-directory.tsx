@@ -79,7 +79,7 @@ export function CalculatorsDirectory() {
                         onSelect={() =>
                           router.push(`/calculators/${calculator.slug}`)
                         }
-                        className="group items-start gap-3 rounded-md border px-3 py-2.5 data-[selected=true]:border-primary/40"
+                        className="group items-start gap-3 rounded-md border px-3 py-2.5 data-[selected=true]:border-foreground/40"
                       >
                         <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-md border bg-muted/40 text-muted-foreground">
                           <CalculatorIcon
