@@ -2,6 +2,7 @@
 
 import { Float } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useTheme } from "next-themes";
 import * as React from "react";
 import * as THREE from "three";
 
@@ -76,7 +77,15 @@ function CoinMark() {
   );
 }
 
-function Coin({ showMark = false }: { showMark?: boolean }) {
+function Coin({
+  showMark = false,
+  light = false,
+}: {
+  showMark?: boolean;
+  light?: boolean;
+}) {
+  const rimColor = light ? "#2563eb" : ACCENT;
+
   return (
     <group>
       <mesh>
@@ -84,7 +93,7 @@ function Coin({ showMark = false }: { showMark?: boolean }) {
           args={[COIN_RADIUS, COIN_RADIUS, COIN_HEIGHT, 64]}
         />
         <meshStandardMaterial
-          color="#111111"
+          color={light ? "#1a1a1a" : "#111111"}
           metalness={0.9}
           roughness={0.35}
         />
@@ -94,9 +103,9 @@ function Coin({ showMark = false }: { showMark?: boolean }) {
         <mesh key={y} position={[0, y, 0]} rotation={[Math.PI / 2, 0, 0]}>
           <torusGeometry args={[COIN_RADIUS, 0.012, 8, 64]} />
           <meshStandardMaterial
-            color={ACCENT}
-            emissive={ACCENT}
-            emissiveIntensity={1.4}
+            color={rimColor}
+            emissive={rimColor}
+            emissiveIntensity={light ? 0.9 : 1.4}
             metalness={0.5}
             roughness={0.3}
             toneMapped={false}
@@ -109,7 +118,13 @@ function Coin({ showMark = false }: { showMark?: boolean }) {
   );
 }
 
-function CoinStack({ coinCount }: { coinCount: number }) {
+function CoinStack({
+  coinCount,
+  light = false,
+}: {
+  coinCount: number;
+  light?: boolean;
+}) {
   const group = React.useRef<THREE.Group>(null);
   const pointer = useThree((state) => state.pointer);
 
@@ -137,7 +152,7 @@ function CoinStack({ coinCount }: { coinCount: number }) {
 
         return (
           <group key={index} position={[0, y, 0]}>
-            <Coin showMark={index === coinCount - 1} />
+            <Coin showMark={index === coinCount - 1} light={light} />
           </group>
         );
       })}
@@ -197,6 +212,15 @@ function FloatingOrnaments({ count }: { count: number }) {
 }
 
 export default function HeroScene({ active }: HeroSceneProps) {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const light = mounted && resolvedTheme === "light";
+
   const quality = React.useMemo(() => {
     const lowEnd =
       typeof window !== "undefined" &&
@@ -221,19 +245,19 @@ export default function HeroScene({ active }: HeroSceneProps) {
       }}
       style={{ background: "transparent" }}
     >
-      <ambientLight intensity={0.55} />
-      <directionalLight position={[4, 6, 4]} intensity={1.6} />
+      <ambientLight intensity={light ? 1.05 : 0.55} />
+      <directionalLight position={[4, 6, 4]} intensity={light ? 1.3 : 1.6} />
       <directionalLight
         position={[-4, 2, -3]}
-        intensity={0.35}
+        intensity={light ? 0.5 : 0.35}
         color="#93c5fd"
       />
       <pointLight
         position={[2.5, 1.8, -3]}
-        intensity={22}
+        intensity={light ? 12 : 22}
         distance={14}
         decay={2}
-        color={ACCENT}
+        color={light ? "#2563eb" : ACCENT}
       />
 
       <Float
@@ -242,7 +266,7 @@ export default function HeroScene({ active }: HeroSceneProps) {
         floatIntensity={0.5}
         floatingRange={[-0.06, 0.06]}
       >
-        <CoinStack coinCount={quality.coinCount} />
+        <CoinStack coinCount={quality.coinCount} light={light} />
       </Float>
 
       <FloatingOrnaments count={quality.ornamentCount} />

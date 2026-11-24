@@ -79,7 +79,7 @@ export function WalletOrderSection() {
 
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-xs font-medium">{wallet.name}</p>
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-[11px] text-muted-foreground">
                     {walletTypeLabels[wallet.type]} · {wallet.currency}
                   </p>
                 </div>

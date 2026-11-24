@@ -14,13 +14,13 @@ const TRUST_LINES = [
 
 export function Hero() {
   return (
-    <section className="relative isolate overflow-hidden border-b border-white/5">
+    <section className="relative isolate overflow-hidden border-b border-border">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
         style={{
           backgroundImage:
-            "linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px)",
+            "linear-gradient(to right, var(--hero-grid) 1px, transparent 1px), linear-gradient(to bottom, var(--hero-grid) 1px, transparent 1px)",
           backgroundSize: "64px 64px",
           maskImage:
             "radial-gradient(ellipse at center, black 20%, transparent 75%)",
@@ -30,23 +30,27 @@ export function Hero() {
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute right-0 top-1/4 h-[420px] w-[420px] translate-x-1/4 rounded-full bg-[radial-gradient(circle,rgba(59,130,246,0.12),transparent_65%)]"
+        className="pointer-events-none absolute right-0 top-1/4 h-[420px] w-[420px] translate-x-1/4 rounded-full"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, var(--hero-glow), transparent 65%)",
+        }}
       />
 
       <div className="relative mx-auto grid w-full max-w-5xl gap-10 px-4 pb-16 pt-28 md:grid-cols-2 md:items-center md:gap-8 md:pb-20 md:pt-32">
         <div className="order-2 md:order-1">
           <Badge
             variant="outline"
-            className="border-blue-500/30 bg-blue-500/10 font-normal text-blue-300"
+            className="border-blue-600/30 bg-blue-500/10 font-normal text-blue-700 dark:border-blue-500/30 dark:text-blue-300"
           >
             {t("landing.hero.badge")}
           </Badge>
 
-          <h1 className="mt-5 max-w-lg text-4xl font-semibold leading-[1.1] tracking-tight text-balance text-neutral-50 md:text-5xl">
+          <h1 className="mt-5 max-w-lg text-4xl font-semibold leading-[1.1] tracking-tight text-balance text-foreground md:text-5xl">
             {t("landing.hero.title")}
           </h1>
 
-          <p className="mt-4 max-w-md text-sm leading-relaxed text-neutral-400 md:text-base">
+          <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground md:text-base">
             {t("landing.hero.description")}
           </p>
 
@@ -62,16 +66,13 @@ export function Hero() {
             </Button>
           </div>
 
-          <ul className="mt-8 flex flex-col gap-2 text-xs text-neutral-400 sm:flex-row sm:flex-wrap sm:gap-x-5">
+          <ul className="mt-8 flex flex-col gap-2 text-xs text-muted-foreground sm:flex-row sm:flex-wrap sm:gap-x-5">
             {TRUST_LINES.map((line) => {
               const Icon = line.icon;
 
               return (
                 <li key={line.labelKey} className="flex items-center gap-1.5">
-                  <Icon
-                    className="size-3.5 text-blue-400/80"
-                    aria-hidden="true"
-                  />
+                  <Icon className="size-3.5 text-primary" aria-hidden="true" />
                   {t(line.labelKey)}
                 </li>
               );

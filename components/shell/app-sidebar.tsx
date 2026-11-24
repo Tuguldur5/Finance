@@ -3,6 +3,7 @@
 import {
   ArrowLeftRight,
   BarChart3,
+  Calculator,
   HandCoins,
   Landmark,
   LayoutDashboard,
@@ -15,7 +16,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { Brand } from "@/components/brand";
+import { Logo } from "@/components/brand/logo";
 import {
   Sidebar,
   SidebarContent,
@@ -74,6 +75,11 @@ const navGroups: NavGroup[] = [
     label: t("shell.groupInsights"),
     items: [
       { href: "/app/reports", label: t("nav.reports"), icon: BarChart3 },
+      {
+        href: "/app/calculators",
+        label: t("nav.calculators"),
+        icon: Calculator,
+      },
     ],
   },
 ];
@@ -91,10 +97,7 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader className="h-14 flex-row items-center gap-2 border-b px-3">
         <Link href="/app" aria-label={t("app.name")} className="min-w-0">
-          <Brand
-            showTagline
-            className="group-data-[collapsible=icon]:w-6 overflow-hidden"
-          />
+          <Logo className="overflow-hidden group-data-[collapsible=icon]:w-6" />
         </Link>
       </SidebarHeader>
 

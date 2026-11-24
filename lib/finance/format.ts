@@ -57,6 +57,15 @@ export function formatNumber(value: number, decimals = 0): string {
   }).format(value);
 }
 
+/** 1,234,567 -> "1.2сая" for compact chart axes. */
+export function compactMoney(value: number): string {
+  const abs = Math.abs(value);
+  if (abs >= 1_000_000_000) return `${formatNumber(value / 1_000_000_000, 1)}тэрбум`;
+  if (abs >= 1_000_000) return `${formatNumber(value / 1_000_000, 1)}сая`;
+  if (abs >= 10_000) return `${formatNumber(value / 1_000, 0)}мян`;
+  return formatNumber(value);
+}
+
 /**
  * Format money for the UI.
  *

@@ -51,6 +51,7 @@ export function SalaryCalculator() {
         }
         value={draft.amount}
         onChange={(value) => setValue("amount", value)}
+        format="money"
       />
 
       <FormActions onReset={reset} />
@@ -109,6 +110,10 @@ export function SalaryCalculator() {
       form={form}
       results={results}
       note={t("calculators.taxNote")}
+      summary={{
+        label: t("calculators.outputs.annualNet"),
+        value: <Money amount={result.annualNet} />,
+      }}
     />
   );
 }
@@ -144,12 +149,13 @@ export function VatCalculator() {
         label={t("calculators.fields.amount")}
         value={draft.amount}
         onChange={(value) => setValue("amount", value)}
+        format="money"
       />
       <NumberField
         label={t("calculators.fields.rate")}
         value={draft.rate}
         onChange={(value) => setValue("rate", value)}
-        max={100}
+        format="percent"
       />
 
       <FormActions onReset={reset} />
@@ -196,6 +202,15 @@ export function VatCalculator() {
       form={form}
       results={results}
       note={t("calculators.taxNote")}
+      summary={{
+        label:
+          applied.mode === "remove"
+            ? t("calculators.outputs.netAmount")
+            : t("calculators.outputs.grossAmount"),
+        value: (
+          <Money amount={applied.mode === "remove" ? result.net : result.gross} />
+        ),
+      }}
     />
   );
 }

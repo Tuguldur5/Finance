@@ -1,10 +1,14 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  aggregateByYear,
   calculateAnnuityPayment,
   calculateLoan,
   buildLoanSchedule,
+  buildSchedule,
+  summarize,
   type LoanInput,
+  type LoanScheduleRow,
 } from "./loan";
 
 const annuityLoan: LoanInput = {
@@ -109,5 +113,126 @@ describe("calculateLoan", () => {
 
     expect(summary.outstandingBalance).toBe(0);
     expect(summary.nextPayment).toBeNull();
+  });
+});
+
+describe("buildSchedule", () => {
+  it("matches buildLoanSchedule for both payment types", () => {
+    expect(buildSchedule(annuityLoan)).toEqual(buildLoanSchedule(annuityLoan));
+
+    const equalPrincipal: LoanInput = {
+      ...annuityLoan,
+      paymentType: "equal_principal",
+    };
+    expect(buildSchedule(equalPrincipal)).toEqual(
+      buildLoanSchedule(equalPrincipal),
+    );
+  });
+
+  it("keeps the annuity payment constant", () => {
+    const schedule = buildSchedule(annuityLoan);
+    const regular = schedule.slice(0, -1);
+
+    expect(new Set(regular.map((row) => row.payment)).size).toBe(1);
+  });
+
+  it("makes equal-principal payments strictly decrease", () => {
+    const schedule = buildSchedule({
+      ...annuityLoan,
+      paymentType: "equal_principal",
+    });
+
+    for (let index = 1; index < schedule.length; index += 1) {
+      expect(schedule[index].payment).toBeLessThan(schedule[index - 1].payment);
+    }
+  });
+
+  it("puts the rounding remainder on the last payment so the balance ends at 0", () => {
+    const schedule = buildSchedule({
+      principal: 100_000_001,
+      annualRate: 13.7,
+      termMonths: 37,
+      startDate: "2026-01-31",
+      paymentType: "annuity",
+    });
+
+    expect(schedule[schedule.length - 1].balance).toBe(0);
+  });
+});
+
+describe("summarize", () => {
+  it("reports totals that add up to the principal", () => {
+    const schedule = buildSchedule(annuityLoan);
+    const stats = summarize(schedule);
+
+    expect(stats.totalPrincipal).toBeCloseTo(1_000_000, 2);
+    expect(stats.totalPayment).toBeCloseTo(
+      stats.totalPrincipal + stats.totalInterest,
+      2,
+    );
+    expect(stats.paymentCount).toBe(12);
+    expect(stats.payoffDate).toBe("2027-01-15");
+    expect(stats.principalShare).toBeGreaterThan(0);
+    expect(stats.principalShare).toBeLessThan(100);
+  });
+
+  it("returns zeroed stats for an empty schedule", () => {
+    expect(summarize([])).toEqual({
+      payment: 0,
+      firstPayment: 0,
+      lastPayment: 0,
+      totalPrincipal: 0,
+      totalPayment: 0,
+      totalInterest: 0,
+      paymentCount: 0,
+      payoffDate: "",
+      principalShare: 0,
+    });
+  });
+});
+
+describe("aggregateByYear", () => {
+  const rows: LoanScheduleRow[] = buildSchedule({
+    principal: 3_600_000,
+    annualRate: 12,
+    termMonths: 30,
+    startDate: "2026-05-10",
+    paymentType: "annuity",
+  });
+
+  it("groups by calendar year and sums payments", () => {
+    const years = aggregateByYear(rows);
+    const total = years.reduce((sum, year) => sum + year.payment, 0);
+
+    expect(years.map((year) => year.year)).toEqual([2026, 2027, 2028]);
+    expect(years.reduce((sum, year) => sum + year.months.length, 0)).toBe(30);
+    expect(total).toBeCloseTo(
+      rows.reduce((sum, row) => sum + row.payment, 0),
+      2,
+    );
+  });
+
+  it("keeps principal, interest and balance consistent", () => {
+    const years = aggregateByYear(rows);
+
+    expect(years.reduce((sum, year) => sum + year.principal, 0)).toBeCloseTo(
+      rows.reduce((sum, row) => sum + row.principal, 0),
+      2,
+    );
+    expect(years.reduce((sum, year) => sum + year.interest, 0)).toBeCloseTo(
+      rows.reduce((sum, row) => sum + row.interest, 0),
+      2,
+    );
+    expect(years[years.length - 1].balance).toBe(0);
+    expect(years[0].balance).toBe(years[0].months.at(-1)?.balance);
+  });
+
+  it("averages the monthly payment within each year", () => {
+    const [first] = aggregateByYear(rows);
+
+    expect(first.averagePayment).toBeCloseTo(
+      first.payment / first.months.length,
+      2,
+    );
   });
 });

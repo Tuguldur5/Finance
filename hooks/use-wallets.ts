@@ -27,7 +27,9 @@ async function fetchWallets(): Promise<WalletBalanceRow[]> {
 
   const { data, error } = await supabase
     .from("wallet_balances")
-    .select("*")
+    .select(
+      "wallet_id, user_id, workspace_id, name, type, currency, color, icon, sort_order, is_archived, initial_balance, balance",
+    )
     .order("is_archived", { ascending: true })
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: true });

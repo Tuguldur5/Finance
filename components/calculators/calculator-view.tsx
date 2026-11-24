@@ -1,13 +1,20 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
 
-import { PageHeader } from "@/components/page-header";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { getCalculatorMeta } from "@/lib/calculators/registry";
 import { t } from "@/lib/i18n";
 
+import { DashboardBackLink } from "./dashboard-back-link";
 import {
   BreakEvenCalculator,
   DiscountCalculator,
@@ -48,27 +55,51 @@ const BODIES: Record<string, React.ComponentType> = {
   budget: BudgetCalculator,
 };
 
-export function CalculatorView({ slug }: { slug: string }) {
+export function CalculatorView({
+  slug,
+  variant = "public",
+}: {
+  slug: string;
+  variant?: "public" | "embedded";
+}) {
   const meta = getCalculatorMeta(slug);
   const Body = BODIES[slug];
+  const embedded = variant === "embedded";
+  const directoryHref = embedded ? "/app/calculators" : "/calculators";
 
   if (!meta || !Body) return null;
 
   return (
     <>
-      <Link
-        href="/calculators"
-        className="mb-3 inline-flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <ArrowLeft className="size-3.5" />
-        {t("calculators.title")}
-      </Link>
+      {embedded ? null : <DashboardBackLink />}
 
-      <PageHeader
-        title={t(`calculators.items.${slug}.title`)}
-        description={t(`calculators.items.${slug}.description`)}
-        actions={<ShareButton />}
-      />
+      <Breadcrumb className="mb-4">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href={directoryHref}>
+                {t("calculators.directoryTitle")}
+              </Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{meta.title}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
+      <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+            {meta.title}
+          </h1>
+          <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+            {meta.description}
+          </p>
+        </div>
+        <ShareButton />
+      </header>
 
       <Body />
     </>

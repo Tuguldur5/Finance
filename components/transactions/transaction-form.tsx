@@ -55,6 +55,15 @@ type TransactionFormProps = {
 
 const TYPE_OPTIONS: TransactionType[] = ["expense", "income", "transfer"];
 
+// A new-transaction draft survives closing/reopening the drawer (and a form
+// remount), so a mobile sheet that closes unexpectedly does not discard input.
+// It is cleared only after a successful save or an explicit cancel.
+let newTransactionDraft: TransactionFormValues | null = null;
+
+export function clearTransactionDraft() {
+  newTransactionDraft = null;
+}
+
 export function TransactionForm({
   transaction,
   defaultType = "expense",
@@ -66,20 +75,36 @@ export function TransactionForm({
   const updateTransaction = useUpdateTransaction();
 
   const pending = createTransaction.isPending || updateTransaction.isPending;
+  const draft = transaction ? null : newTransactionDraft;
 
   const form = useForm<TransactionFormValues>({
     resolver: zodResolver(transactionFormSchema),
     defaultValues: {
-      type: transaction?.type ?? defaultType,
-      amount: transaction ? String(toNumber(transaction.amount)) : "",
-      walletId: transaction?.wallet_id ?? "",
-      toWalletId: transaction?.to_wallet_id ?? "",
-      categoryId: transaction?.category_id ?? "",
-      occurredAt: transaction?.occurred_at ?? formatDateISO(new Date()),
-      note: transaction?.note ?? "",
-      tags: transaction?.tags ?? [],
+      type: transaction?.type ?? draft?.type ?? defaultType,
+      amount: transaction
+        ? String(toNumber(transaction.amount))
+        : (draft?.amount ?? ""),
+      walletId: transaction?.wallet_id ?? draft?.walletId ?? "",
+      toWalletId: transaction?.to_wallet_id ?? draft?.toWalletId ?? "",
+      categoryId: transaction?.category_id ?? draft?.categoryId ?? "",
+      occurredAt:
+        transaction?.occurred_at ??
+        draft?.occurredAt ??
+        formatDateISO(new Date()),
+      note: transaction?.note ?? draft?.note ?? "",
+      tags: transaction?.tags ?? draft?.tags ?? [],
     },
   });
+
+  React.useEffect(() => {
+    if (transaction) return;
+
+    const subscription = form.watch((values) => {
+      newTransactionDraft = values as TransactionFormValues;
+    });
+
+    return () => subscription.unsubscribe();
+  }, [form, transaction]);
 
   const type = form.watch("type");
   const walletId = form.watch("walletId");
@@ -150,11 +175,18 @@ export function TransactionForm({
         await updateTransaction.mutateAsync({ id: transaction.id, input });
       } else {
         await createTransaction.mutateAsync(input);
+        newTransactionDraft = null;
       }
       onDone();
     } catch {
-      // Toast already shown by the mutation hook.
+      // Keep the draft so the user can retry without re-entering everything.
+      // The toast is already shown by the mutation hook.
     }
+  }
+
+  function handleCancel() {
+    if (!transaction) newTransactionDraft = null;
+    onDone();
   }
 
   if (walletsLoading || categoriesLoading) {
@@ -357,7 +389,7 @@ export function TransactionForm({
           <Button
             type="button"
             variant="outline"
-            onClick={onDone}
+            onClick={handleCancel}
             disabled={pending}
           >
             {t("common.cancel")}

@@ -121,6 +121,93 @@ function elapsedMonthsFrom(startDate: string, asOf: string): number {
   return Math.max(0, differenceInCalendarMonths(end, start));
 }
 
+/** Alias used by the shared schedule UI: build a full monthly schedule. */
+export function buildSchedule(input: LoanInput): LoanScheduleRow[] {
+  return buildLoanSchedule(input);
+}
+
+export type LoanYearRow = {
+  /** Calendar year of the payments. */
+  year: number;
+  months: LoanScheduleRow[];
+  payment: number;
+  principal: number;
+  interest: number;
+  balance: number;
+  /** Average payment per month paid in this year. */
+  averagePayment: number;
+};
+
+/** Group schedule rows by the calendar year of their due date. */
+export function aggregateByYear(rows: LoanScheduleRow[]): LoanYearRow[] {
+  const groups = new Map<number, LoanYearRow>();
+
+  for (const row of rows) {
+    const year = Number(row.dueDate.slice(0, 4));
+    const entry = groups.get(year) ?? {
+      year,
+      months: [],
+      payment: 0,
+      principal: 0,
+      interest: 0,
+      balance: 0,
+      averagePayment: 0,
+    };
+
+    entry.months.push(row);
+    entry.payment = roundMoney(entry.payment + row.payment);
+    entry.principal = roundMoney(entry.principal + row.principal);
+    entry.interest = roundMoney(entry.interest + row.interest);
+    entry.balance = row.balance;
+    entry.averagePayment = roundMoney(entry.payment / entry.months.length);
+    groups.set(year, entry);
+  }
+
+  return [...groups.values()];
+}
+
+export type LoanScheduleStats = {
+  /** First regular payment (constant for annuity loans). */
+  payment: number;
+  firstPayment: number;
+  lastPayment: number;
+  totalPrincipal: number;
+  totalPayment: number;
+  totalInterest: number;
+  paymentCount: number;
+  payoffDate: string;
+  /** Share of every paid tugrik that goes to principal, in percent. */
+  principalShare: number;
+};
+
+/** Totals and headline numbers for a finished schedule. */
+export function summarize(rows: LoanScheduleRow[]): LoanScheduleStats {
+  const totalPrincipal = roundMoney(
+    rows.reduce((sum, row) => sum + row.principal, 0),
+  );
+  const totalPayment = roundMoney(
+    rows.reduce((sum, row) => sum + row.payment, 0),
+  );
+  const totalInterest = roundMoney(
+    rows.reduce((sum, row) => sum + row.interest, 0),
+  );
+
+  return {
+    payment: rows[0]?.payment ?? 0,
+    firstPayment: rows[0]?.payment ?? 0,
+    lastPayment: rows[rows.length - 1]?.payment ?? 0,
+    totalPrincipal,
+    totalPayment,
+    totalInterest,
+    paymentCount: rows.length,
+    payoffDate: rows[rows.length - 1]?.dueDate ?? "",
+    principalShare:
+      totalPayment > 0
+        ? roundMoney((totalPrincipal / totalPayment) * 100, 2)
+        : 0,
+  };
+}
+
 export function calculateLoan(
   input: LoanInput,
   asOf: string = format(new Date(), "yyyy-MM-dd"),

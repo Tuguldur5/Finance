@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Brand } from "@/components/brand";
+import { Logo } from "@/components/brand/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { t } from "@/lib/i18n";
 
@@ -14,7 +14,7 @@ export default function AuthLayout({
       <header className="border-b">
         <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-4">
           <Link href="/" aria-label={t("app.name")}>
-            <Brand />
+            <Logo />
           </Link>
           <ThemeToggle />
         </div>

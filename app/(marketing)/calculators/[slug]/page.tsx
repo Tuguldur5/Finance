@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { CalculatorView } from "@/components/calculators/calculator-view";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   CALCULATORS,
   isCalculatorSlug,
@@ -36,19 +35,10 @@ export default async function CalculatorPage({ params }: CalculatorPageProps) {
 
   if (!isCalculatorSlug(slug)) notFound();
 
+  // `useSearchParams` needs a Suspense boundary during prerendering; results
+  // are instant, so no loading skeleton is shown.
   return (
-    <Suspense
-      fallback={
-        <div className="space-y-3">
-          <Skeleton className="h-6 w-56" />
-          <Skeleton className="h-4 w-80" />
-          <div className="grid gap-3 lg:grid-cols-2">
-            <Skeleton className="h-64 w-full rounded-lg" />
-            <Skeleton className="h-64 w-full rounded-lg" />
-          </div>
-        </div>
-      }
-    >
+    <Suspense fallback={null}>
       <CalculatorView slug={slug} />
     </Suspense>
   );

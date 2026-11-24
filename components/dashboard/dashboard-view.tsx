@@ -535,7 +535,7 @@ export function DashboardView() {
                           {progress.isOverBudget ? (
                             <Badge
                               variant="outline"
-                              className="border-destructive/40 px-1 py-0 text-[10px] font-normal text-destructive"
+                              className="border-destructive/40 px-1 py-0 text-[11px] font-normal text-destructive"
                             >
                               {t("budgets.overBudget")}
                             </Badge>

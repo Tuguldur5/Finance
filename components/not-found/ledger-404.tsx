@@ -41,7 +41,7 @@ function LedgerRow({
       </span>
       <span
         aria-hidden="true"
-        className="h-px min-w-4 flex-1 border-b border-dotted border-neutral-300 dark:border-neutral-700"
+        className="h-px min-w-4 flex-1 border-b border-dotted border-border"
       />
       <span
         className={cn(
@@ -63,7 +63,7 @@ function Giant404() {
         4
         <span
           aria-hidden="true"
-          className="absolute inset-x-0 bottom-0 h-1 bg-[#3b82f6]"
+          className="absolute inset-x-0 bottom-0 h-1 bg-primary"
         />
       </span>
     </p>
@@ -114,7 +114,7 @@ export function Ledger404({ variant, homeHref }: Ledger404Props) {
   return (
     <div
       className={cn(
-        "w-full rounded-lg border border-[#e5e5e5] bg-white text-foreground dark:border-[#262626] dark:bg-black",
+        "w-full rounded-lg border border-border bg-background text-foreground",
         isApp ? "mx-auto max-w-3xl p-5 sm:p-6" : "max-w-4xl p-6 sm:p-8 md:p-10",
       )}
     >
@@ -137,7 +137,7 @@ export function Ledger404({ variant, homeHref }: Ledger404Props) {
 
           <div
             className={cn(
-              "mt-5 rounded-md border border-[#e5e5e5] p-4 dark:border-[#262626]",
+              "mt-5 rounded-md border border-border p-4",
               isApp ? "mt-4 space-y-1.5 text-xs" : "space-y-2 text-sm",
             )}
           >
@@ -159,7 +159,7 @@ export function Ledger404({ variant, homeHref }: Ledger404Props) {
               value={<Money amount={0} />}
             />
 
-            <div className="my-3 h-px bg-[#e5e5e5] dark:bg-[#262626]" />
+            <div className="my-3 h-px bg-border" />
 
             <LedgerRow
               label={t("notFound.total")}
@@ -220,7 +220,7 @@ export function Ledger404({ variant, homeHref }: Ledger404Props) {
             isApp && "hidden md:flex",
           )}
         >
-          <div className="w-full rounded-lg border border-[#e5e5e5] p-4 dark:border-[#262626]">
+          <div className="w-full rounded-lg border border-border p-4">
             <p className="text-xs text-muted-foreground">
               {t("notFound.chartCaption")}
             </p>

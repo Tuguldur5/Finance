@@ -6,9 +6,9 @@ import * as React from "react";
 function StaticSceneFallback() {
   return (
     <div className="flex h-full w-full items-center justify-center">
-      <div className="relative flex size-36 items-center justify-center rounded-full border border-blue-500/40 bg-[#0a0a0a] sm:size-40">
-        <div className="absolute inset-5 rounded-full border border-white/10" />
-        <span className="text-2xl font-semibold tracking-tight text-neutral-500">
+      <div className="relative flex size-36 items-center justify-center rounded-full border border-blue-600/50 bg-secondary sm:size-40 dark:border-blue-500/40 dark:bg-[#0a0a0a]">
+        <div className="absolute inset-5 rounded-full border border-border dark:border-white/10" />
+        <span className="text-2xl font-semibold tracking-tight text-muted-foreground">
           ₮
         </span>
       </div>

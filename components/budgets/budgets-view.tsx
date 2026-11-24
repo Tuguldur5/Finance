@@ -10,7 +10,7 @@ import {
   Plus,
   Trash2,
 } from "lucide-react";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import * as React from "react";
 
 import { EmptyState } from "@/components/empty-state";
@@ -58,7 +58,7 @@ function monthKeyOf(date: Date): string {
 
 export function BudgetsView() {
   const [month, setMonth] = React.useState(() => {
-    const today = new Date(todayISO());
+    const today = parseISO(todayISO());
     return new Date(today.getFullYear(), today.getMonth(), 1);
   });
   const [dialogOpen, setDialogOpen] = React.useState(false);
@@ -92,7 +92,7 @@ export function BudgetsView() {
   }
 
   const isCurrentMonth =
-    monthKey === monthKeyOf(new Date(todayISO()));
+    monthKey === monthKeyOf(parseISO(todayISO()));
 
   return (
     <>
@@ -133,7 +133,7 @@ export function BudgetsView() {
               variant="ghost"
               size="sm"
               onClick={() => {
-                const today = new Date(todayISO());
+                const today = parseISO(todayISO());
                 setMonth(new Date(today.getFullYear(), today.getMonth(), 1));
               }}
             >
@@ -276,7 +276,7 @@ export function BudgetsView() {
                       {progress.isOverBudget ? (
                         <Badge
                           variant="outline"
-                          className="border-destructive/40 px-1.5 py-0 text-[10px] font-normal text-destructive"
+                          className="border-destructive/40 px-1.5 py-0 text-[11px] font-normal text-destructive"
                         >
                           {t("budgets.overspentBy", {
                             amount: new Intl.NumberFormat("en-US").format(

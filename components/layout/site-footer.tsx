@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Brand } from "@/components/brand";
+import { Logo } from "@/components/brand/logo";
 import { t } from "@/lib/i18n";
 
 const FOOTER_LINKS = [
@@ -17,7 +17,7 @@ export function SiteFooter() {
     <footer className="border-t border-border">
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10 md:flex-row md:items-start md:justify-between">
         <div className="max-w-xs">
-          <Brand />
+          <Logo />
           <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
             {t("landing.footer.tagline")}
           </p>

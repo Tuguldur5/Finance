@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut, Settings } from "lucide-react";
+import { Home, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as React from "react";
@@ -89,6 +89,15 @@ export function UserMenu({ user }: { user: ShellUser }) {
             </span>
           </span>
         </DropdownMenuLabel>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem asChild>
+          <Link href="/">
+            <Home className="size-4" />
+            {t("nav.home")}
+          </Link>
+        </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 

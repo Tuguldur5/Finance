@@ -1,112 +1,229 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Search, SearchX } from "lucide-react";
+import Link from "next/link";
 import * as React from "react";
 
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  CALCULATOR_CATEGORIES,
   CALCULATORS,
-  getCalculatorsByCategory,
+  CALCULATOR_CATEGORIES,
+  getCategoryLabel,
   type CalculatorCategory,
 } from "@/lib/calculators/registry";
 import { t } from "@/lib/i18n";
 
 import { CalculatorIcon } from "./calculator-icon";
+import { DashboardBackLink } from "./dashboard-back-link";
 
-export function CalculatorsDirectory() {
-  const router = useRouter();
+type CategoryFilter = CalculatorCategory | "all";
+
+type CalculatorsDirectoryProps = {
+  /** `embedded` keeps every link inside the dashboard shell. */
+  variant?: "public" | "embedded";
+};
+
+export function CalculatorsDirectory({
+  variant = "public",
+}: CalculatorsDirectoryProps) {
+  const embedded = variant === "embedded";
+  const basePath = embedded ? "/app/calculators" : "/calculators";
   const [query, setQuery] = React.useState("");
-  const groups = getCalculatorsByCategory();
+  const [category, setCategory] = React.useState<CategoryFilter>("all");
+  const searchRef = React.useRef<HTMLInputElement>(null);
+
+  // "/" focuses search, the same shortcut as the app's command palettes.
+  React.useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key !== "/" || event.metaKey || event.ctrlKey || event.altKey) {
+        return;
+      }
+
+      const target = event.target as HTMLElement | null;
+      const isEditing =
+        target?.isContentEditable ||
+        target?.tagName === "INPUT" ||
+        target?.tagName === "TEXTAREA" ||
+        target?.tagName === "SELECT";
+
+      if (isEditing) return;
+
+      event.preventDefault();
+      searchRef.current?.focus();
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   const normalized = query.trim().toLowerCase();
 
-  const matches = (slug: string, category: CalculatorCategory) => {
-    if (!normalized) return true;
-    const haystack = [
-      t(`calculators.items.${slug}.title`),
-      t(`calculators.items.${slug}.description`),
-      t(`calculators.categories.${category}`),
-    ]
-      .join(" ")
-      .toLowerCase();
-    return haystack.includes(normalized);
-  };
+  const visible = React.useMemo(() => {
+    return CALCULATORS.filter((calculator) => {
+      if (category !== "all" && calculator.category !== category) return false;
+      if (!normalized) return true;
 
-  const visibleCount = CALCULATORS.filter((calculator) =>
-    matches(calculator.slug, calculator.category),
-  ).length;
+      return [
+        calculator.title,
+        calculator.description,
+        getCategoryLabel(calculator.category),
+      ]
+        .join(" ")
+        .toLowerCase()
+        .includes(normalized);
+    });
+  }, [normalized, category]);
+
+  const hasFilters = normalized !== "" || category !== "all";
+
+  function clearFilters() {
+    setQuery("");
+    setCategory("all");
+    searchRef.current?.focus();
+  }
 
   return (
-    <Command
-      shouldFilter={false}
-      className="rounded-lg border bg-card shadow-none"
-    >
-      <CommandInput
-        value={query}
-        onValueChange={setQuery}
-        placeholder={t("calculators.searchPlaceholder")}
-      />
-      <CommandList className="max-h-none">
-        <CommandEmpty>{t("calculators.noResults")}</CommandEmpty>
+    <div>
+      {embedded ? null : <DashboardBackLink />}
 
-        {visibleCount === 0 ? null : (
-          <>
-            {CALCULATOR_CATEGORIES.map((category) => {
-              const items = groups[category].filter((calculator) =>
-                matches(calculator.slug, category),
-              );
-              if (items.length === 0) return null;
+      <header className="mb-6">
+        {embedded ? (
+          <Breadcrumb className="mb-3">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href="/app">{t("nav.dashboard")}</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{t("calculators.directoryTitle")}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        ) : null}
 
-              return (
-                <CommandGroup
-                  key={category}
-                  heading={t(`calculators.categories.${category}`)}
+        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+          {t("calculators.directoryTitle")}
+        </h1>
+        <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+          {t("calculators.subtitle")}
+        </p>
+
+        <div className="relative mt-5 max-w-md">
+          <Search
+            aria-hidden
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+          />
+          <Input
+            ref={searchRef}
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={t("calculators.searchPlaceholder")}
+            aria-label={t("calculators.searchHint")}
+            autoComplete="off"
+            className="h-10 pr-10 pl-9"
+          />
+          <kbd
+            aria-hidden
+            className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 rounded border border-border bg-muted px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground"
+          >
+            /
+          </kbd>
+        </div>
+      </header>
+
+      <Tabs
+        value={category}
+        onValueChange={(value) => setCategory(value as CategoryFilter)}
+        className="mb-4 gap-0"
+      >
+        <TabsList
+          variant="line"
+          style={{ height: "auto" }}
+          className="w-full flex-wrap justify-start gap-1 rounded-none border-b bg-transparent p-0"
+        >
+          <TabsTrigger
+            value="all"
+            className="h-9 flex-none px-3 text-xs sm:text-sm"
+          >
+            {t("common.all")}
+          </TabsTrigger>
+          {CALCULATOR_CATEGORIES.map((item) => (
+            <TabsTrigger
+              key={item}
+              value={item}
+              className="h-9 flex-none px-3 text-xs sm:text-sm"
+            >
+              {getCategoryLabel(item)}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
+
+      {visible.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed px-6 py-14 text-center">
+          <span className="flex size-10 items-center justify-center rounded-full border bg-muted text-muted-foreground">
+            <SearchX className="size-4" aria-hidden />
+          </span>
+          <p className="mt-3 text-sm font-medium">
+            {t("calculators.emptyTitle")}
+          </p>
+          <p className="mt-1 max-w-sm text-xs leading-relaxed text-muted-foreground">
+            {t("calculators.emptyDescription")}
+          </p>
+          {hasFilters ? (
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-4"
+              onClick={clearFilters}
+            >
+              {t("calculators.clearFilters")}
+            </Button>
+          ) : null}
+        </div>
+      ) : (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {visible.map((calculator) => (
+            <Link
+              key={calculator.slug}
+              href={`${basePath}/${calculator.slug}`}
+              className="calc-card flex items-start gap-3 rounded-lg p-3"
+            >
+              <span className="calc-card-icon flex size-9 shrink-0 items-center justify-center rounded-lg border border-border bg-muted">
+                <CalculatorIcon name={calculator.icon} className="size-4" />
+              </span>
+
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-medium leading-snug">
+                  {calculator.title}
+                </span>
+                <span className="mt-0.5 line-clamp-2 block text-xs leading-relaxed text-muted-foreground">
+                  {calculator.description}
+                </span>
+                <Badge
+                  variant="outline"
+                  className="mt-2 px-1.5 text-[11px] font-normal text-muted-foreground"
                 >
-                  <div className="grid gap-1.5 pb-1 sm:grid-cols-2">
-                    {items.map((calculator) => (
-                      <CommandItem
-                        key={calculator.slug}
-                        value={calculator.slug}
-                        onSelect={() =>
-                          router.push(`/calculators/${calculator.slug}`)
-                        }
-                        className="group items-start gap-3 rounded-md border px-3 py-2.5 data-[selected=true]:border-foreground/40"
-                      >
-                        <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-md border bg-muted/40 text-muted-foreground">
-                          <CalculatorIcon
-                            name={calculator.icon}
-                            className="size-3.5"
-                          />
-                        </span>
-                        <span className="min-w-0 flex-1">
-                          <span className="block text-sm font-medium">
-                            {t(`calculators.items.${calculator.slug}.title`)}
-                          </span>
-                          <span className="mt-0.5 block text-xs leading-snug text-muted-foreground">
-                            {t(
-                              `calculators.items.${calculator.slug}.description`,
-                            )}
-                          </span>
-                        </span>
-                        <ArrowRight className="mt-1 size-3.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-data-[selected=true]:opacity-100" />
-                      </CommandItem>
-                    ))}
-                  </div>
-                </CommandGroup>
-              );
-            })}
-          </>
-        )}
-      </CommandList>
-    </Command>
+                  {getCategoryLabel(calculator.category)}
+                </Badge>
+              </span>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

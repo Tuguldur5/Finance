@@ -62,11 +62,13 @@ export function ProfitCalculator() {
         label={t("calculators.fields.revenue")}
         value={draft.revenue}
         onChange={(value) => setValue("revenue", value)}
+        format="money"
       />
       <NumberField
         label={t("calculators.fields.cost")}
         value={draft.cost}
         onChange={(value) => setValue("cost", value)}
+        format="money"
       />
       <FormActions onReset={reset} />
     </form>
@@ -118,7 +120,16 @@ export function ProfitCalculator() {
     </div>
   );
 
-  return <CalculatorFrame form={form} results={results} />;
+  return (
+    <CalculatorFrame
+      form={form}
+      results={results}
+      summary={{
+        label: t("calculators.outputs.profit"),
+        value: <Money amount={result.profit} />,
+      }}
+    />
+  );
 }
 
 export function MarginCalculator() {
@@ -137,11 +148,13 @@ export function MarginCalculator() {
         label={t("calculators.fields.revenue")}
         value={draft.revenue}
         onChange={(value) => setValue("revenue", value)}
+        format="money"
       />
       <NumberField
         label={t("calculators.fields.cost")}
         value={draft.cost}
         onChange={(value) => setValue("cost", value)}
+        format="money"
       />
       <FormActions onReset={reset} />
     </form>
@@ -178,7 +191,16 @@ export function MarginCalculator() {
     </div>
   );
 
-  return <CalculatorFrame form={form} results={results} />;
+  return (
+    <CalculatorFrame
+      form={form}
+      results={results}
+      summary={{
+        label: t("calculators.outputs.margin"),
+        value: `${formatNumber(result.marginPercent, 1)}%`,
+      }}
+    />
+  );
 }
 
 export function BreakEvenCalculator() {
@@ -202,17 +224,20 @@ export function BreakEvenCalculator() {
         label={t("calculators.fields.fixedCosts")}
         value={draft.fixedCosts}
         onChange={(value) => setValue("fixedCosts", value)}
+        format="money"
       />
       <div className="grid grid-cols-2 gap-3">
         <NumberField
           label={t("calculators.fields.pricePerUnit")}
           value={draft.pricePerUnit}
           onChange={(value) => setValue("pricePerUnit", value)}
+          format="money"
         />
         <NumberField
           label={t("calculators.fields.variableCostPerUnit")}
           value={draft.variableCostPerUnit}
           onChange={(value) => setValue("variableCostPerUnit", value)}
+          format="money"
         />
       </div>
       <FormActions onReset={reset} />
@@ -289,7 +314,18 @@ export function BreakEvenCalculator() {
     </div>
   );
 
-  return <CalculatorFrame form={form} results={results} />;
+  return (
+    <CalculatorFrame
+      form={form}
+      results={results}
+      summary={{
+        label: t("calculators.outputs.breakEvenUnits"),
+        value: result.isFeasible
+          ? formatNumber(result.breakEvenUnits)
+          : "—",
+      }}
+    />
+  );
 }
 
 export function DiscountCalculator() {
@@ -308,12 +344,13 @@ export function DiscountCalculator() {
         label={t("calculators.fields.price")}
         value={draft.price}
         onChange={(value) => setValue("price", value)}
+        format="money"
       />
       <NumberField
         label={t("calculators.fields.discountPercent")}
         value={draft.discountPercent}
         onChange={(value) => setValue("discountPercent", value)}
-        max={100}
+        format="percent"
       />
       <FormActions onReset={reset} />
     </form>
@@ -342,5 +379,14 @@ export function DiscountCalculator() {
     </div>
   );
 
-  return <CalculatorFrame form={form} results={results} />;
+  return (
+    <CalculatorFrame
+      form={form}
+      results={results}
+      summary={{
+        label: t("calculators.outputs.finalPrice"),
+        value: <Money amount={result.finalPrice} />,
+      }}
+    />
+  );
 }

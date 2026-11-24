@@ -59,14 +59,17 @@ export function useNetWorthSnapshots() {
     queryFn: async (): Promise<NetWorthSnapshot[]> => {
       const supabase = createClient();
 
+      // Cap the history at ~2 years; fetch newest first, then restore the
+      // oldest-to-newest order the chart expects.
       const { data, error } = await supabase
         .from("net_worth_snapshots")
         .select("date, assets, liabilities")
-        .order("date", { ascending: true });
+        .order("date", { ascending: false })
+        .limit(730);
 
       if (error) throw new Error(t("errors.loadFailed"));
 
-      return (data ?? []) as NetWorthSnapshot[];
+      return ((data ?? []) as NetWorthSnapshot[]).slice().reverse();
     },
     staleTime: 60_000,
   });

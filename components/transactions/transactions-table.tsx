@@ -225,13 +225,13 @@ export function TransactionsTable({
                             <Badge
                               key={tag}
                               variant="secondary"
-                              className="px-1.5 py-0 text-[10px] font-normal"
+                              className="px-1.5 py-0 text-[11px] font-normal"
                             >
                               {tag}
                             </Badge>
                           ))}
                           {row.tags.length > 2 ? (
-                            <span className="text-[10px] text-muted-foreground">
+                            <span className="text-[11px] text-muted-foreground">
                               +{row.tags.length - 2}
                             </span>
                           ) : null}

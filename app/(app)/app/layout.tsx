@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { AppHeader } from "@/components/shell/app-header";
 import { AppSidebar } from "@/components/shell/app-sidebar";
 import { ConfigRequired } from "@/components/shell/config-required";
-import { MobileNav } from "@/components/shell/mobile-nav";
+import { MobileNav } from "@/components/app/mobile-nav";
 import { QuickAddProvider } from "@/components/transactions/quick-add-provider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { SIDEBAR_COOKIE } from "@/lib/config";
@@ -72,7 +72,7 @@ export default async function AppLayout({
         <AppSidebar />
         <SidebarInset>
           <AppHeader user={shellUser} />
-          <main className="flex-1 px-3 py-4 pb-24 md:px-6 md:py-6 md:pb-8">
+          <main className="app-shell-main flex-1 px-3 pt-4 md:px-6 md:py-6">
             {children}
           </main>
         </SidebarInset>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Brand } from "@/components/brand";
+import { Logo } from "@/components/brand/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { QuickAddButton } from "@/components/transactions/quick-add-button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -18,7 +18,7 @@ export function AppHeader({ user }: { user: ShellUser }) {
       />
 
       <Link href="/app" className="md:hidden" aria-label={t("app.name")}>
-        <Brand />
+        <Logo />
       </Link>
 
       <div className="ml-auto flex items-center gap-1">

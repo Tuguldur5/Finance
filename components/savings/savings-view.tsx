@@ -245,7 +245,7 @@ export function SavingsView() {
                   <Badge
                     variant="outline"
                     className={cn(
-                      "shrink-0 text-[10px] font-normal",
+                      "shrink-0 text-[11px] font-normal",
                       liquidityBadgeClass(account.liquidity),
                     )}
                   >

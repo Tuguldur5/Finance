@@ -4,49 +4,48 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ------------------------------------------------------------------ */
-/*  Light theme (zinc/slate base, navy tinted surfaces)               */
+/*  Light theme (neutral white surfaces)                              */
 /* ------------------------------------------------------------------ */
 :root {
   --radius: 0.5rem;
 
-  --background: #f6f8fc;
-  --foreground: #0e1729;
+  --background: #ffffff;
+  --foreground: #0a0a0a;
 
   --card: #ffffff;
-  --card-foreground: #0e1729;
+  --card-foreground: #0a0a0a;
 
   --popover: #ffffff;
-  --popover-foreground: #0e1729;
+  --popover-foreground: #0a0a0a;
 
-  --primary: #1d4ed8;
+  --primary: #2563eb;
   --primary-foreground: #ffffff;
 
-  --secondary: #eef2f9;
-  --secondary-foreground: #16213a;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #0a0a0a;
 
-  --muted: #eef2f9;
-  --muted-foreground: #5a6880;
+  --muted: #f5f5f5;
+  --muted-foreground: #737373;
 
-  /* Hover is intentionally inverted: dark ink surface with white text. */
-  --accent: #0e1729;
-  --accent-foreground: #ffffff;
+  --accent: #f5f5f5;
+  --accent-foreground: #0a0a0a;
 
   --destructive: #d92d20;
   --destructive-foreground: #ffffff;
 
-  --border: #dde3ee;
-  --input: #dde3ee;
+  --border: #e5e5e5;
+  --input: #e5e5e5;
   --ring: #2563eb;
 
   --chart-1: #2563eb;
   --chart-2: #0e9384;
   --chart-3: #d97706;
-  --chart-4: #7c3aed;
+  --chart-4: #dc2626;
   --chart-5: #db2777;
 
   --sidebar: #f1f5fb;
   --sidebar-foreground: #1c2740;
-  --sidebar-primary: #1d4ed8;
+  --sidebar-primary: #2563eb;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #0e1729;
   --sidebar-accent-foreground: #ffffff;
@@ -55,6 +54,9 @@
 
   --site-header-glass: rgba(255, 255, 255, 0.7);
   --site-header-border: rgba(0, 0, 0, 0.08);
+
+  --hero-grid: rgba(0, 0, 0, 0.05);
+  --hero-glow: rgba(59, 130, 246, 0.08);
 }
 
 /* ------------------------------------------------------------------ */
@@ -79,9 +81,9 @@
   --muted: #1c1c1c;
   --muted-foreground: #a3a3a3;
 
-  /* Hover is intentionally inverted: light surface with black text. */
-  --accent: #fafafa;
-  --accent-foreground: #000000;
+  /* Hover surfaces stay subtle in both themes so muted icons remain legible. */
+  --accent: #1c1c1c;
+  --accent-foreground: #fafafa;
 
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
@@ -107,6 +109,9 @@
 
   --site-header-glass: rgba(10, 10, 10, 0.6);
   --site-header-border: rgba(255, 255, 255, 0.08);
+
+  --hero-grid: rgba(255, 255, 255, 0.04);
+  --hero-glow: rgba(59, 130, 246, 0.12);
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
@@ -221,5 +226,89 @@
 
   .scrollbar-thin::-webkit-scrollbar-track {
     background: transparent;
+  }
+
+  /*
+   * Directory row-card. Hover only swaps border + surface; the icon container
+   * keeps a fixed size and never changes opacity or transform. Touch devices
+   * (hover: none) get no hover state at all.
+   */
+  .calc-card {
+    border: 1px solid var(--border);
+    background-color: var(--card);
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease;
+  }
+
+  .calc-card-icon {
+    color: var(--muted-foreground);
+    transition: color 150ms ease;
+  }
+
+  @media (hover: hover) {
+    .calc-card:hover {
+      border-color: color-mix(in oklab, var(--foreground) 25%, transparent);
+      background-color: var(--accent);
+    }
+
+    .calc-card:hover .calc-card-icon {
+      color: var(--foreground);
+    }
+  }
+
+  .calc-card:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  /*
+   * Floating dashboard bottom bar (mobile only). The solid 0.95 background is
+   * the fallback; browsers with backdrop-filter get the glass treatment.
+   */
+  .app-mobile-nav {
+    position: fixed;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    left: 12px;
+    z-index: 40;
+    height: 68px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 22px;
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  }
+
+  .dark .app-mobile-nav {
+    border-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(20, 20, 20, 0.95);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  }
+
+  /* Room for the floating bar so the last card is never covered. */
+  .app-shell-main {
+    padding-bottom: calc(68px + 12px + env(safe-area-inset-bottom) + 16px);
+  }
+
+  @media (min-width: 768px) {
+    .app-shell-main {
+      padding-bottom: 2rem;
+    }
+  }
+
+  @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .app-mobile-nav {
+      background-color: rgba(255, 255, 255, 0.65);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      -webkit-backdrop-filter: blur(22px) saturate(160%);
+      backdrop-filter: blur(22px) saturate(160%);
+    }
+
+    .dark .app-mobile-nav {
+      background-color: rgba(20, 20, 20, 0.55);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 10px 30px rgba(0, 0, 0, 0.45);
+    }
   }
 }

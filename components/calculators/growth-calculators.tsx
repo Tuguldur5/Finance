@@ -91,6 +91,7 @@ function GrowthChart({
           stroke="var(--color-balance)"
           strokeWidth={2}
           dot={false}
+          isAnimationActive={data.length <= 60}
         />
         {showContributed ? (
           <Line
@@ -100,6 +101,7 @@ function GrowthChart({
             strokeWidth={1.5}
             strokeDasharray="4 2"
             dot={false}
+            isAnimationActive={data.length <= 60}
           />
         ) : null}
       </LineChart>
@@ -124,18 +126,20 @@ export function InterestCalculator() {
         label={t("calculators.fields.principal")}
         value={draft.principal}
         onChange={(value) => setValue("principal", value)}
+        format="money"
       />
       <div className="grid grid-cols-2 gap-3">
         <NumberField
           label={t("calculators.fields.annualRate")}
           value={draft.annualRate}
           onChange={(value) => setValue("annualRate", value)}
+          format="percent"
         />
         <NumberField
           label={t("calculators.fields.years")}
           value={draft.years}
           onChange={(value) => setValue("years", value)}
-          max={100}
+          format="years"
         />
       </div>
       <FormActions onReset={reset} />
@@ -160,7 +164,16 @@ export function InterestCalculator() {
     </div>
   );
 
-  return <CalculatorFrame form={form} results={results} />;
+  return (
+    <CalculatorFrame
+      form={form}
+      results={results}
+      summary={{
+        label: t("calculators.outputs.finalAmount"),
+        value: <Money amount={result.total} />,
+      }}
+    />
+  );
 }
 
 export function CompoundCalculator() {
@@ -186,18 +199,20 @@ export function CompoundCalculator() {
         label={t("calculators.fields.principal")}
         value={draft.principal}
         onChange={(value) => setValue("principal", value)}
+        format="money"
       />
       <div className="grid grid-cols-2 gap-3">
         <NumberField
           label={t("calculators.fields.annualRate")}
           value={draft.annualRate}
           onChange={(value) => setValue("annualRate", value)}
+          format="percent"
         />
         <NumberField
           label={t("calculators.fields.years")}
           value={draft.years}
           onChange={(value) => setValue("years", value)}
-          max={100}
+          format="years"
         />
       </div>
       <div className="grid gap-1.5">
@@ -240,7 +255,16 @@ export function CompoundCalculator() {
     </div>
   );
 
-  return <CalculatorFrame form={form} results={results} />;
+  return (
+    <CalculatorFrame
+      form={form}
+      results={results}
+      summary={{
+        label: t("calculators.outputs.finalAmount"),
+        value: <Money amount={result.finalAmount} />,
+      }}
+    />
+  );
 }
 
 export function SavingsCalculator() {
@@ -266,24 +290,26 @@ export function SavingsCalculator() {
         label={t("calculators.fields.initialAmount")}
         value={draft.initial}
         onChange={(value) => setValue("initial", value)}
+        format="money"
       />
       <NumberField
         label={t("calculators.fields.monthlyContribution")}
         value={draft.monthly}
         onChange={(value) => setValue("monthly", value)}
+        format="money"
       />
       <div className="grid grid-cols-2 gap-3">
         <NumberField
           label={t("calculators.fields.annualRate")}
           value={draft.annualRate}
           onChange={(value) => setValue("annualRate", value)}
+          format="percent"
         />
         <NumberField
           label={t("calculators.fields.months")}
           value={draft.months}
           onChange={(value) => setValue("months", value)}
-          max={600}
-          step={1}
+          format="months"
         />
       </div>
       <FormActions onReset={reset} />
@@ -310,7 +336,16 @@ export function SavingsCalculator() {
     </div>
   );
 
-  return <CalculatorFrame form={form} results={results} />;
+  return (
+    <CalculatorFrame
+      form={form}
+      results={results}
+      summary={{
+        label: t("calculators.outputs.finalAmount"),
+        value: <Money amount={result.finalAmount} />,
+      }}
+    />
+  );
 }
 
 export function InvestmentCalculator() {
@@ -336,23 +371,26 @@ export function InvestmentCalculator() {
         label={t("calculators.fields.initialAmount")}
         value={draft.initial}
         onChange={(value) => setValue("initial", value)}
+        format="money"
       />
       <NumberField
         label={t("calculators.fields.monthlyContribution")}
         value={draft.monthly}
         onChange={(value) => setValue("monthly", value)}
+        format="money"
       />
       <div className="grid grid-cols-2 gap-3">
         <NumberField
           label={t("calculators.fields.annualRate")}
           value={draft.annualRate}
           onChange={(value) => setValue("annualRate", value)}
+          format="percent"
         />
         <NumberField
           label={t("calculators.fields.years")}
           value={draft.years}
           onChange={(value) => setValue("years", value)}
-          max={60}
+          format="years"
         />
       </div>
       <FormActions onReset={reset} />
@@ -379,5 +417,14 @@ export function InvestmentCalculator() {
     </div>
   );
 
-  return <CalculatorFrame form={form} results={results} />;
+  return (
+    <CalculatorFrame
+      form={form}
+      results={results}
+      summary={{
+        label: t("calculators.outputs.finalAmount"),
+        value: <Money amount={result.finalAmount} />,
+      }}
+    />
+  );
 }

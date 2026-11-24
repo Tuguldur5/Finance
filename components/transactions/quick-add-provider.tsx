@@ -3,9 +3,11 @@
 import * as React from "react";
 
 import { TransactionDialog } from "./transaction-dialog";
+import { clearTransactionDraft } from "./transaction-form";
 
 type QuickAddContextValue = {
   openQuickAdd: () => void;
+  isOpen: boolean;
 };
 
 const QuickAddContext = React.createContext<QuickAddContextValue | null>(null);
@@ -27,9 +29,13 @@ export function useQuickAdd(): QuickAddContextValue {
 export function QuickAddProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = React.useState(false);
 
+  // Leaving the dashboard layout (sign-out, navigation to the public site)
+  // must not leave one user's draft visible to the next session.
+  React.useEffect(() => () => clearTransactionDraft(), []);
+
   const value = React.useMemo<QuickAddContextValue>(
-    () => ({ openQuickAdd: () => setOpen(true) }),
-    [],
+    () => ({ openQuickAdd: () => setOpen(true), isOpen: open }),
+    [open],
   );
 
   return (

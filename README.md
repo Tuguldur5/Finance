@@ -130,7 +130,7 @@ npm run dev
 
 - `http://localhost:3000` — landing
 - `http://localhost:3000/calculators` — нийтийн тооцоолуурууд
-- `http://localhost:3000/login` — Google-ээр нэвтрэх
+- `http://localhost:3000/login` — Google-р нэвтрэх
 - `http://localhost:3000/api/health` — Supabase холболтын диагностик
 - `http://localhost:3000/app` — нэвтэрсний дараах хяналтын самбар
 

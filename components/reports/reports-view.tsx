@@ -7,6 +7,7 @@ import {
   endOfMonth,
   endOfYear,
   format,
+  parseISO,
   startOfMonth,
   startOfYear,
 } from "date-fns";
@@ -77,7 +78,7 @@ function compactMoney(value: number): string {
 export function ReportsView() {
   const today = todayISO();
   const [period, setPeriod] = React.useState<Period>("month");
-  const [anchor, setAnchor] = React.useState(() => new Date(today));
+  const [anchor, setAnchor] = React.useState(() => parseISO(today));
 
   const from =
     period === "month"
@@ -281,7 +282,7 @@ export function ReportsView() {
             variant="ghost"
             size="sm"
             className="ml-1"
-            onClick={() => setAnchor(new Date(today))}
+            onClick={() => setAnchor(parseISO(today))}
           >
             {t("common.today")}
           </Button>

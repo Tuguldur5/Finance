@@ -67,7 +67,7 @@ export function FlatlineChart({ className }: { className?: string }) {
           y1={y}
           y2={y}
           strokeWidth={1}
-          className="stroke-[#e5e5e5] dark:stroke-[#1f1f1f]"
+          className="stroke-border"
         />
       ))}
 
@@ -94,14 +94,14 @@ export function FlatlineChart({ className }: { className?: string }) {
             ? "none"
             : "stroke-dashoffset 900ms ease-out",
         }}
-        className="stroke-[#2563eb] dark:stroke-[#3b82f6]"
+        className="stroke-primary"
       />
 
       <circle
         cx={RIGHT}
         cy={BASELINE}
         r={3}
-        className="fill-[#2563eb] dark:fill-[#3b82f6]"
+        className="fill-primary"
       />
       <text
         x={RIGHT}
@@ -109,7 +109,7 @@ export function FlatlineChart({ className }: { className?: string }) {
         textAnchor="end"
         fontSize={9}
         fontWeight={500}
-        className="fill-[#2563eb] dark:fill-[#3b82f6]"
+        className="fill-primary"
       >
         404
       </text>

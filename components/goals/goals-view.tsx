@@ -162,7 +162,7 @@ export function GoalsView() {
                   {progress.isComplete ? (
                     <Badge
                       variant="outline"
-                      className="border-emerald-600/30 text-[10px] font-normal text-emerald-600 dark:text-emerald-400"
+                      className="border-emerald-600/30 text-[11px] font-normal text-emerald-600 dark:text-emerald-400"
                     >
                       {t("goals.completed")}
                     </Badge>

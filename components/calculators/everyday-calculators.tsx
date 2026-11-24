@@ -162,6 +162,7 @@ export function CurrencyCalculator() {
         label={t("calculators.fields.amount")}
         value={draft.amount}
         onChange={(value) => setValue("amount", value)}
+        suffix={draft.fromCurrency}
       />
 
       <div className="grid grid-cols-2 gap-3">
@@ -293,7 +294,16 @@ export function CurrencyCalculator() {
     </div>
   );
 
-  return <CalculatorFrame form={form} results={results} />;
+  return (
+    <CalculatorFrame
+      form={form}
+      results={results}
+      summary={{
+        label: t("calculators.outputs.converted"),
+        value: <Money amount={result.converted} currency={toCurrency} />,
+      }}
+    />
+  );
 }
 
 export function BudgetCalculator() {
@@ -315,6 +325,7 @@ export function BudgetCalculator() {
         label={t("calculators.fields.income")}
         value={draft.income}
         onChange={(value) => setValue("income", value)}
+        format="money"
       />
       <FormActions onReset={reset} />
     </form>
@@ -370,5 +381,14 @@ export function BudgetCalculator() {
     </div>
   );
 
-  return <CalculatorFrame form={form} results={results} />;
+  return (
+    <CalculatorFrame
+      form={form}
+      results={results}
+      summary={{
+        label: t("calculators.outputs.savings"),
+        value: <Money amount={result.savings} />,
+      }}
+    />
+  );
 }

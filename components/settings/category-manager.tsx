@@ -308,7 +308,7 @@ export function CategoryManager() {
                   {category.is_archived ? (
                     <Badge
                       variant="outline"
-                      className="px-1.5 py-0 text-[10px] font-normal text-muted-foreground"
+                      className="px-1.5 py-0 text-[11px] font-normal text-muted-foreground"
                     >
                       {t("settings.archiveCategory")}
                     </Badge>

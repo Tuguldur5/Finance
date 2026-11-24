@@ -37,6 +37,14 @@ export function TransactionDialog({
   defaultType = "expense",
 }: TransactionDialogProps) {
   const isMobile = useIsMobile();
+  // Freeze the container while the form is open. A viewport change (keyboard,
+  // rotation, responsive mode) must not swap Dialog <-> Drawer and remount the
+  // form, which would wipe everything the user has typed.
+  const lockedMobile = React.useRef(isMobile);
+  React.useEffect(() => {
+    if (!open) lockedMobile.current = isMobile;
+  }, [open, isMobile]);
+  const renderMobile = open ? lockedMobile.current : isMobile;
   const title = transaction
     ? t("transactions.editTitle")
     : t("transactions.newTitle");
@@ -50,7 +58,7 @@ export function TransactionDialog({
     />
   );
 
-  if (isMobile) {
+  if (renderMobile) {
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
         <DrawerContent>

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import * as React from "react";
 
-import { Brand } from "@/components/brand";
+import { Logo } from "@/components/brand/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import {
@@ -99,7 +99,6 @@ export function SiteHeader() {
     };
   }, []);
 
-  const transparentHome = isHome && !scrolled;
   const glass = !isHome || scrolled;
   const ctaHref = authState === "authenticated" ? "/app" : "/login";
   const ctaLabel =
@@ -139,12 +138,9 @@ export function SiteHeader() {
           <Link
             href="/"
             aria-label={t("nav.home")}
-            className={cn(
-              "shrink-0 rounded-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-              transparentHome ? "text-white" : "text-foreground",
-            )}
+            className="shrink-0 rounded-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
-            <Brand />
+            <Logo />
           </Link>
 
           <nav
@@ -163,11 +159,9 @@ export function SiteHeader() {
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
                     "relative rounded-sm text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-                    transparentHome
-                      ? "text-neutral-300 hover:text-white"
-                      : isActive
-                        ? "text-foreground"
-                        : "text-muted-foreground hover:text-foreground",
+                    isActive
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground",
                   )}
                 >
                   {t(item.labelKey)}
@@ -183,7 +177,7 @@ export function SiteHeader() {
           </nav>
 
           <div className="flex items-center gap-1.5">
-            <div className={cn(transparentHome && "text-white")}>
+            <div className="text-foreground">
               <ThemeToggle />
             </div>
 
@@ -196,11 +190,7 @@ export function SiteHeader() {
                   variant="ghost"
                   size="icon"
                   aria-label={t("nav.menu")}
-                  className={cn(
-                    "md:hidden",
-                    transparentHome &&
-                      "text-white hover:bg-white/10 hover:text-white",
-                  )}
+                  className="md:hidden"
                 >
                   <Menu className="size-5" />
                 </Button>
@@ -208,7 +198,7 @@ export function SiteHeader() {
               <SheetContent side="right" className="w-72">
                 <SheetHeader className="border-b pb-4">
                   <SheetTitle className="sr-only">{t("nav.menu")}</SheetTitle>
-                  <Brand />
+                  <Logo />
                 </SheetHeader>
 
                 <nav

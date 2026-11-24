@@ -62,23 +62,23 @@ const FAQ_ITEMS = [
 
 export default function LandingPage() {
   return (
-    <div className="dark min-h-svh bg-black text-neutral-50">
+    <div className="min-h-svh bg-background text-foreground">
       <main>
         <Hero />
 
         <section
           id="features"
-          className="scroll-mt-24 border-b border-white/5 py-16 md:py-20"
+          className="scroll-mt-24 border-b border-border py-16 md:py-20"
         >
           <div className="mx-auto w-full max-w-5xl px-4">
             <div className="max-w-xl">
-              <p className="text-xs font-medium uppercase tracking-wider text-neutral-500">
+              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 {t("landing.features.eyebrow")}
               </p>
               <h2 className="mt-2 text-2xl font-semibold tracking-tight text-balance md:text-3xl">
                 {t("landing.features.title")}
               </h2>
-              <p className="mt-2 text-sm leading-relaxed text-neutral-400">
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 {t("landing.features.subtitle")}
               </p>
             </div>
@@ -90,18 +90,15 @@ export default function LandingPage() {
                 return (
                   <li
                     key={feature.titleKey}
-                    className="rounded-lg border border-white/[0.08] bg-[#0a0a0a] p-5"
+                    className="rounded-lg border border-border bg-card p-5"
                   >
-                    <span className="flex size-8 items-center justify-center rounded-md border border-white/10 bg-white/[0.03]">
-                      <Icon
-                        className="size-4 text-blue-400"
-                        aria-hidden="true"
-                      />
+                    <span className="flex size-8 items-center justify-center rounded-md border border-border bg-muted">
+                      <Icon className="size-4 text-primary" aria-hidden="true" />
                     </span>
-                    <h3 className="mt-3 text-sm font-medium text-neutral-100">
+                    <h3 className="mt-3 text-sm font-medium text-foreground">
                       {t(feature.titleKey)}
                     </h3>
-                    <p className="mt-1 text-xs leading-relaxed text-neutral-400">
+                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                       {t(feature.descKey)}
                     </p>
                   </li>
@@ -113,18 +110,18 @@ export default function LandingPage() {
 
         <section
           id="calculators"
-          className="scroll-mt-24 border-b border-white/5 py-16 md:py-20"
+          className="scroll-mt-24 border-b border-border py-16 md:py-20"
         >
           <div className="mx-auto w-full max-w-5xl px-4">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div className="max-w-xl">
-                <p className="text-xs font-medium uppercase tracking-wider text-neutral-500">
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   {t("landing.calculators.eyebrow")}
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold tracking-tight text-balance md:text-3xl">
                   {t("landing.calculators.title")}
                 </h2>
-                <p className="mt-2 text-sm leading-relaxed text-neutral-400">
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {t("landing.calculators.subtitle")}
                 </p>
               </div>
@@ -145,10 +142,10 @@ export default function LandingPage() {
                   <li key={calculator.slug} className="h-full">
                     <Link
                       href={`/calculators/${calculator.slug}`}
-                      className="group flex h-full items-center gap-2 rounded-md border border-white/[0.08] bg-[#0a0a0a] px-3 py-3 text-xs text-neutral-300 transition-colors hover:border-white/40 hover:text-white"
+                      className="group flex h-full items-center gap-2 rounded-md border border-border bg-card px-3 py-3 text-xs text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
                     >
                       <Icon
-                        className="size-4 shrink-0 text-neutral-500 transition-colors group-hover:text-white"
+                        className="size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground"
                         aria-hidden="true"
                       />
                       <span className="truncate">
@@ -164,17 +161,17 @@ export default function LandingPage() {
 
         <section
           id="faq"
-          className="scroll-mt-24 border-b border-white/5 py-16 md:py-20"
+          className="scroll-mt-24 border-b border-border py-16 md:py-20"
         >
           <div className="mx-auto grid w-full max-w-5xl gap-8 px-4 md:grid-cols-[0.8fr_1.2fr] md:gap-12">
             <div className="max-w-sm">
-              <p className="text-xs font-medium uppercase tracking-wider text-neutral-500">
+              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 {t("landing.faq.eyebrow")}
               </p>
               <h2 className="mt-2 text-2xl font-semibold tracking-tight text-balance md:text-3xl">
                 {t("landing.faq.title")}
               </h2>
-              <p className="mt-2 text-sm leading-relaxed text-neutral-400">
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 {t("landing.faq.subtitle")}
               </p>
             </div>
@@ -184,12 +181,12 @@ export default function LandingPage() {
                 <AccordionItem
                   key={item.value}
                   value={item.value}
-                  className="border-white/[0.08]"
+                  className="border-border"
                 >
-                  <AccordionTrigger className="text-sm text-neutral-200 hover:no-underline">
+                  <AccordionTrigger className="text-sm text-foreground hover:no-underline">
                     {t(item.titleKey)}
                   </AccordionTrigger>
-                  <AccordionContent className="max-w-2xl text-xs leading-relaxed text-neutral-400">
+                  <AccordionContent className="max-w-2xl text-xs leading-relaxed text-muted-foreground">
                     {t(item.descKey)}
                   </AccordionContent>
                 </AccordionItem>
@@ -200,12 +197,12 @@ export default function LandingPage() {
 
         <section className="py-16 md:py-20">
           <div className="mx-auto w-full max-w-5xl px-4">
-            <div className="flex flex-col gap-5 rounded-xl border border-white/10 bg-[#0a0a0a] px-6 py-8 md:flex-row md:items-center md:justify-between md:px-8">
+            <div className="flex flex-col gap-5 rounded-xl border border-border bg-card px-6 py-8 md:flex-row md:items-center md:justify-between md:px-8">
               <div>
                 <h2 className="text-xl font-semibold tracking-tight text-balance md:text-2xl">
                   {t("landing.cta.title")}
                 </h2>
-                <p className="mt-2 max-w-md text-sm leading-relaxed text-neutral-400">
+                <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
                   {t("landing.cta.description")}
                 </p>
               </div>

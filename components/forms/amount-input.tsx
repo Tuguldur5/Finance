@@ -41,10 +41,9 @@ export function AmountInput({
   function handleBlur() {
     const parsed = parseAmountInput(value);
 
-    if (parsed === null) {
-      onChange("");
-      return;
-    }
+    // Never erase what the user typed. Invalid input stays visible so the
+    // form validation can explain the problem and the value can be fixed.
+    if (parsed === null) return;
 
     onChange(formatNumber(parsed, decimals));
   }

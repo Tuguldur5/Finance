@@ -192,18 +192,18 @@ export function DebtsView() {
                       {settled ? (
                         <Badge
                           variant="outline"
-                          className="border-emerald-600/30 text-[10px] font-normal text-emerald-600 dark:text-emerald-400"
+                          className="border-emerald-600/30 text-[11px] font-normal text-emerald-600 dark:text-emerald-400"
                         >
                           {t("debts.settled")}
                         </Badge>
                       ) : progress.isOverdue ? (
-                        <Badge variant="destructive" className="text-[10px] font-normal">
+                        <Badge variant="destructive" className="text-[11px] font-normal">
                           {t("debts.overdue")}
                         </Badge>
                       ) : progress.isDueSoon ? (
                         <Badge
                           variant="outline"
-                          className="border-amber-600/40 text-[10px] font-normal text-amber-600 dark:text-amber-400"
+                          className="border-amber-600/40 text-[11px] font-normal text-amber-600 dark:text-amber-400"
                         >
                           {t("debts.dueInDays", { days: progress.daysUntilDue ?? 0 })}
                         </Badge>
